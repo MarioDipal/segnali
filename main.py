@@ -24,5 +24,6 @@ mean_coeffs, var_coeffs = ar_coeff(df)
 add_list(featdf, mean_coeffs, 'Media AR')
 add_list(featdf, var_coeffs, 'Varianza AR')
 
+
 plot_feature(featdf)
 
