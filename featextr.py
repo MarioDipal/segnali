@@ -48,7 +48,6 @@ def slope_sign_change(df):
     return slope_sign_changes.values
 
 ###########################################
-
 def mean_abs_value(df):
     mav_values = []
     for col in df.columns:
@@ -58,7 +57,6 @@ def mean_abs_value(df):
     return mav_values
 
 ###########################################
-
 def root_mean_square(df):
     rms_values = []
     for col in df.columns:
@@ -73,7 +71,6 @@ def roots_mean_square(df):
     return rms_values
 
 ###########################################
-
 def ar_coeff(df, order = 4):
     mean_coeffs = []
     var_coeffs = []

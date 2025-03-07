@@ -1,21 +1,10 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def plot_dataframe(df):
-    """
-    Crea un grafico in cui la prima colonna del DataFrame è colorata di rosso e ben
-    visibile, e le altre sono in tratto fine e grigio.
-
-    Args:
-        df (pd.DataFrame): Il DataFrame da visualizzare.
-    """
+def plot_dataframe(df): #segnale di baseline rosso, altri segnali grigi e fini
 
     fig, ax = plt.subplots(figsize=(20, 11))
-
-    # Colora la prima colonna di rosso e rendila ben visibile
     ax.plot(df.index, df.iloc[:, 0], color='red', linewidth=2, label=df.columns[0])
-
-    # Rendi le altre colonne in tratto fine e grigio
     for colonna in df.columns[1:]:
         ax.plot(df.index, df[colonna], color='gray', linewidth=0.5, label=colonna)
 
@@ -26,11 +15,8 @@ def plot_dataframe(df):
     plt.grid(True)
     plt.show()
 
-###########################################
-
-
-def plot_feature(df):
-    n_features = df.shape[0] - 1  # Numero di feature (righe tranne il target)
+def plot_feature(df): #insieme di grafici con ordinata il valore del target e come ascissa il valore della feature
+    n_features = df.shape[0] - 1
 
     fig, ax = plt.subplots(3, 3)
     ax = ax.flatten()
