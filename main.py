@@ -26,4 +26,3 @@ add_list(featdf, var_coeffs, 'Varianza AR')
 
 plot_feature(featdf)
 
-
