@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.signal import periodogram
+from scipy.signal import periodogram, welch
 from statsmodels.tsa.ar_model import AutoReg
 ###########################################
 
@@ -81,5 +81,16 @@ def ar_coeff(df, order = 4):
         mean_coeffs.append(np.mean(ar_coeff))
         var_coeffs.append((np.var(ar_coeff)))
     return mean_coeffs, var_coeffs
+###########################################
 
+def mean_med_freq(df, fs):
+    freq_media = []
+    freq_mediana = []
+    for col in df.columns:
+        signal = df[col].values
+        freq, psd = welch(signal, fs = fs) #calcolo densità spettrale di potenza
+        cdf = np.cumsum(psd) / np.sum(psd) #calcola la somma comulativa degli elementi, ogni elemento è la somma di tutti i precendit
+        freq_media.append(np.sum(freq * psd)/np.sum(psd))
+        freq_mediana.append(freq[np.where(cdf >=0.5)[0][0]])
 
+    return  freq_media, freq_mediana
