@@ -94,3 +94,11 @@ def mean_med_freq(df, fs):
         freq_mediana.append(freq[np.where(cdf >=0.5)[0][0]])
 
     return  freq_media, freq_mediana
+###########################################
+
+def av_ampl_cha(df):
+    aac = []
+    for col in df.columns:
+        signal = df[col].values
+        aac.append(np.mean(np.abs(np.diff(signal))))
+    return  aac
