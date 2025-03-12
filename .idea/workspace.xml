@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06f9f9d5-7a36-4899-a6bf-f5b8c33c50d0" name="Changes" comment="add mean_med_freq" />
+    <list default="true" id="06f9f9d5-7a36-4899-a6bf-f5b8c33c50d0" name="Changes" comment="acc">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/featextr.py" beforeDir="false" afterPath="$PROJECT_DIR$/featextr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knn.py" beforeDir="false" afterPath="$PROJECT_DIR$/knn.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotfun.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -29,7 +35,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2sRBkuIUIx29ERKlkEdzTYorRWI" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -154,7 +162,21 @@
       <option name="project" value="LOCAL" />
       <updated>1741531960809</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="acc">
+      <created>1741688566187</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1741688566187</updated>
+    </task>
+    <task id="LOCAL-00012" summary="acc">
+      <created>1741688584189</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1741688584189</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -173,6 +195,7 @@
     <MESSAGE value="sefhewfiuhwe" />
     <MESSAGE value="changes" />
     <MESSAGE value="add mean_med_freq" />
-    <option name="LAST_COMMIT_MESSAGE" value="add mean_med_freq" />
+    <MESSAGE value="acc" />
+    <option name="LAST_COMMIT_MESSAGE" value="acc" />
   </component>
 </project>

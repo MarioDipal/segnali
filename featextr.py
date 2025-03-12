@@ -3,7 +3,8 @@ from scipy.signal import periodogram, welch
 from statsmodels.tsa.ar_model import AutoReg
 ###########################################
 
-def will_ampl(df, threshold):
+def will_ampl(df):
+    threshold = np.mean(df.iloc[0])
     reference = df.iloc[0].values
     counts = (np.abs(df - reference) > threshold).sum(axis=0)
     return counts.values
@@ -41,13 +42,15 @@ def waveform_lenght(df):
 
 ###########################################
 def slope_sign_change(df):
-    def count_slope_sign_changes(column):
-        return np.sum((np.sign(np.diff(column))[:-1] != np.sign(np.diff(column))[1:]))
-
-    slope_sign_changes = df.apply(lambda col: count_slope_sign_changes(col.dropna()))
-    return slope_sign_changes.values
-
-###########################################
+    slope_sign_changes = []
+    for col_name in df.columns:
+        column = df[col_name].dropna()
+        diffs = np.diff(column)
+        signs = np.sign(diffs)
+        sign_changes = np.sum(signs[:-1] != signs[1:])
+        slope_sign_changes.append(sign_changes)
+    return slope_sign_changes
+##########################################
 def mean_abs_value(df):
     mav_values = []
     for col in df.columns:
@@ -101,4 +104,4 @@ def av_ampl_cha(df):
     for col in df.columns:
         signal = df[col].values
         aac.append(np.mean(np.abs(np.diff(signal))))
-    return  aac
+    return aac
