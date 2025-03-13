@@ -1,5 +1,5 @@
 import pandas as pd
-from featextr import will_ampl, max_fact_len, peak_frequency, waveform_lenght, slope_sign_change, mean_abs_value, root_mean_square, ar_coeff, mean_med_freq, av_ampl_cha
+from featextr import will_ampl, max_fact_len, peak_frequency, waveform_lenght, slope_sign_change, mean_abs_value, root_mean_square, ar_coeff, mean_med_freq, av_ampl_cha, wavelet_correlations, MinR
 from dropbaseline import featured_df, add_list
 from plotfun import plot_dataframe, plot_feature
 from knn import knn, pca
@@ -27,5 +27,8 @@ freq_media, freq_medn = mean_med_freq(df, 200)
 add_list(featdf, freq_media, 'Frequenza Media')
 add_list(featdf, freq_medn, 'Freqeunza Mediana')
 add_list(featdf, av_ampl_cha(df), 'Avg Ampl Change')
+add_list(featdf, wavelet_correlations(df, 200), 'Wavelet Correlations')
+add_list(featdf, MinR(df, 10), 'MinR')
 
-plot_feature(featdf)
+print(featdf)
+#plot_feature(featdf)
