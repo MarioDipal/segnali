@@ -4,10 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06f9f9d5-7a36-4899-a6bf-f5b8c33c50d0" name="Changes" comment="wiillison SSC">
+    <list default="true" id="06f9f9d5-7a36-4899-a6bf-f5b8c33c50d0" name="Changes" comment="aggiunta e normalizzazione">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dropbaseline.py" beforeDir="false" afterPath="$PROJECT_DIR$/dropbaseline.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/featextr.py" beforeDir="false" afterPath="$PROJECT_DIR$/featextr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/knn.py" beforeDir="false" afterPath="$PROJECT_DIR$/knn.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plotfun.py" beforeDir="false" afterPath="$PROJECT_DIR$/plotfun.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -181,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1741776893276</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="aggiunta e normalizzazione">
+      <created>1741888208634</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1741888208634</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -202,6 +212,7 @@
     <MESSAGE value="add mean_med_freq" />
     <MESSAGE value="acc" />
     <MESSAGE value="wiillison SSC" />
-    <option name="LAST_COMMIT_MESSAGE" value="wiillison SSC" />
+    <MESSAGE value="aggiunta e normalizzazione" />
+    <option name="LAST_COMMIT_MESSAGE" value="aggiunta e normalizzazione" />
   </component>
 </project>

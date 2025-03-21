@@ -1,10 +1,11 @@
 import pandas as pd
-from featextr import will_ampl, max_fact_len, peak_frequency, waveform_lenght, slope_sign_change, mean_abs_value, root_mean_square, ar_coeff, mean_med_freq, av_ampl_cha, wavelet_correlations, MinR
+from featextr import will_ampl, max_fact_len, peak_frequency, waveform_lenght, slope_sign_change, mean_abs_value, \
+    root_mean_square, ar_coeff, mean_med_freq, av_ampl_cha, wavelet_correlations, MinR, hilbert_tras
 from dropbaseline import featured_df, add_list
-from plotfun import plot_dataframe, plot_feature
+from plotfun import plot_dataframe, plot_feature_tobs, plot_feat
 from knn import knn, pca
 
-df = pd.read_excel('segnali excel/2022p65cb_PCCortBulb Trace Data.xlsx') #scelta segnale
+df = pd.read_excel('segnali excel/2023p94cb_SMCortBulb Trace Data.xlsx') #scelta segnale
 
 df = df.set_index(df.columns[0])
 #plot_dataframe(df) #mostra dataframe
@@ -29,6 +30,11 @@ add_list(featdf, freq_medn, 'Freqeunza Mediana')
 add_list(featdf, av_ampl_cha(df), 'Avg Ampl Change')
 add_list(featdf, wavelet_correlations(df, 200), 'Wavelet Correlations')
 add_list(featdf, MinR(df, 10), 'MinR')
+rms_amp, rms_fre, plv = hilbert_tras(df)
+add_list(featdf, rms_amp, 'RMS Amp Env Hil')
+add_list(featdf, plv, 'plv Fase istantanea Hil')
+add_list(featdf, rms_fre, 'RMS Freq istantanea Hil')
 
 print(featdf)
-#plot_feature(featdf)
+#plot_feature_tobs(featdf)
+#plot_feat(featdf)

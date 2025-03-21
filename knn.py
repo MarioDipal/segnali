@@ -1,6 +1,6 @@
 import numpy as np
 
-def pca(df, n):
+def pca(df, n): #dovrebbe già funzionare
     df_data = df.iloc[1:, :]
     df_data = df_data.to_numpy()
     mu = np.mean(df_data, axis=0)
@@ -14,7 +14,7 @@ def pca(df, n):
     z_star = np.matmul(df_m, U) #proietta i dati nello spazio pc
     return z_star
 
-def knn (x_train, y_train, x_test, k):
+def knn (x_train, y_train, x_test, k): #va diviso il set in training e test
     distances = np.linalg.norm(x_train - x_test, axis=1)
     indices = np.argsort(distances)[:k]
     counts = np.bincount(y_train[indices].astype(int))

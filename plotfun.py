@@ -15,7 +15,7 @@ def plot_dataframe(df): #segnale di baseline rosso, altri segnali grigi e fini
     plt.grid(True)
     plt.show()
 
-def plot_feature(df): #insieme di grafici con ordinata il valore del target e come ascissa il valore della feature
+def plot_feature_tobs(df): #insieme di grafici con ordinata il valore del target e come ascissa il valore della feature
     n_features = df.shape[0] - 1
 
     # Calcola il numero di righe e colonne per i subplot
@@ -33,3 +33,26 @@ def plot_feature(df): #insieme di grafici con ordinata il valore del target e co
     for i in range(n_features, nrows * ncols):
         fig.delaxes(ax[i])
     plt.show()
+
+def plot_feat(df):
+    nomi_segnali = df.columns.tolist()
+    prima_riga = df.iloc[0]  # Ottieni i valori della prima riga
+
+    for index, valori_feature in df.iterrows():
+        plt.figure(figsize=(10, 6))  # Crea una nuova figura per ogni feature
+
+        # Usa un indice numerico per l'asse x
+        x_values = range(len(nomi_segnali))
+
+        for i, (nome_segnale, valore) in enumerate(zip(nomi_segnali, valori_feature.values)):
+            colore = 'red' if prima_riga.iloc[i] > 0.5 else 'blue'  # Imposta il colore in base alla prima riga
+            plt.plot(x_values[i], valore, marker='o', linestyle='-', color=colore)
+
+        # Imposta le etichette dell'asse x
+        plt.xticks(x_values, nomi_segnali, rotation=45)  # Ruota le etichette per una migliore leggibilità
+        plt.title(f'Feature: {index}')
+        plt.xlabel('Numero del Segnale')
+        plt.ylabel('Valore della Feature')
+        plt.grid(True)
+        plt.tight_layout()
+        plt.show()

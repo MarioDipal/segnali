@@ -1,6 +1,6 @@
 import numpy as np
 import pywt
-from scipy.signal import periodogram, welch
+from scipy.signal import periodogram, welch, hilbert
 from statsmodels.tsa.ar_model import AutoReg
 ###########################################
 
@@ -39,7 +39,7 @@ def peak_frequency(df, fs): #esegue la trasformazione in frequenza
         peak_freq = freqs[np.argmax(power)]
         peak_freqs.append(peak_freq)
 
-    return peak_freqs
+    return (peak_freqs / peak_freqs[0])
 
 ###########################################
 def waveform_lenght(df):
@@ -84,11 +84,6 @@ def root_mean_square(df):
         rms_values.append(rms)
     return (rms_values / rms_values[0])
 
-
-def roots_mean_square(df):
-    rms_values = {col: np.sqrt(np.mean(df[col].values ** 2)) for col in df.columns}
-    return rms_values
-
 ###########################################
 def ar_coeff(df, order = 4):
     mean_coeffs = []
@@ -126,7 +121,7 @@ def av_ampl_cha(df):
 def wavelet_correlations(df, fs):
     freq_range = (20, 150) #range frequenza normali emg
     baseline = df.iloc[:, 0].values
-    media = [0]
+    media = [1]
     for col in df.columns[1:]:
         signal = df[col].values
         scales = np.arange(1, 128)
@@ -141,7 +136,7 @@ def wavelet_correlations(df, fs):
     return media
 
 def MinR(df, n_segments):
-    results = [0]
+    results = [1]
     baseline = df.iloc[:, 0].values
     def extract_features(signal, n_segments):
         segment_length = len(signal) // n_segments
@@ -153,7 +148,7 @@ def MinR(df, n_segments):
             features.append((mean, std_dev))
         return np.array(features)
     def calculate_distance(features1, features2):
-        dist = 0
+        dist = 1
         for (mean1, std1), (mean2, std2) in zip(features1, features2):
             dist += (mean1 - mean2) ** 2 + (np.sqrt(std1) - np.sqrt(std2)) ** 2
         return np.sqrt(dist)
@@ -167,3 +162,28 @@ def MinR(df, n_segments):
         results.append(dist)
 
     return results
+
+
+def hilbert_tras(df):
+    fs = 200 #frequenza di campionamento
+    rms_amp_envelopes = []
+    plv_inst_phases = [] #phase locking value quanto due segnali rimangono in fase tra loro nel tempo
+    rms_inst_freqs = []
+
+    first_signal = df.iloc[:, 0]  # Primo segnale nel DataFrame
+    first_analytic_signal = hilbert(first_signal)
+    first_phase = np.unwrap(np.angle(first_analytic_signal))  # Fase istantanea del primo segnale
+
+    for col in df.columns:
+        signal = df[col]
+        analytic_signal = hilbert(signal)
+        amplitude_envelope = (np.abs(analytic_signal)) # Modulo del segnale analitico
+        instantaneous_phase = np.unwrap(np.angle(analytic_signal))  # Fase istantanea
+        instantaneous_frequency = (np.diff(np.unwrap(instantaneous_phase)) * fs / (2 * np.pi) ) # Frequenza istantanea
+        rms_amp_envelopes.append(np.sqrt(np.mean(amplitude_envelope ** 2)))
+        rms_inst_freqs.append(np.sqrt(np.mean(instantaneous_frequency ** 2)))
+        plv = np.abs(np.mean(np.exp(1j * (first_phase - instantaneous_phase))))
+        plv_inst_phases.append(plv)
+
+    return (rms_amp_envelopes / rms_amp_envelopes[0]), (rms_inst_freqs / rms_inst_freqs[0]), plv_inst_phases
+
