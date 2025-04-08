@@ -1,7 +1,9 @@
 import numpy as np
 import pywt
-from scipy.signal import periodogram, welch, hilbert
+from scipy.signal import periodogram, welch, hilbert, stft
 from statsmodels.tsa.ar_model import AutoReg
+from sympy import divisor_sigma
+from scipy.interpolate import CubicSpline
 ###########################################
 
 def will_ampl(df):
@@ -52,7 +54,7 @@ def waveform_lenght(df):
     return (wave_len/wave_len[0])
 ###########################################
 def slope_sign_change(df):
-    threshold = 0.5 #soglia per limitare il rumore
+    threshold = 0.3 #soglia per limitare il rumore
     slope_sign_changes = []
     for col_name in df.columns:
         column = df[col_name].dropna().values
@@ -64,7 +66,8 @@ def slope_sign_change(df):
                 sign_changes += 1
 
         slope_sign_changes.append(sign_changes)
-    slope_sign_changes = [val / slope_sign_changes[0] for val in slope_sign_changes] #normalizzaszione rispetto alla baseline
+    if slope_sign_changes [0] != 0:
+        slope_sign_changes = [val / slope_sign_changes[0] for val in slope_sign_changes] #normalizzaszione rispetto alla baseline
     return slope_sign_changes
 ##########################################
 def mean_abs_value(df):
@@ -134,6 +137,7 @@ def wavelet_correlations(df, fs):
             corr_values.append(corr)
         media.append(np.mean(corr_values))
     return media
+###########################################
 
 def MinR(df, n_segments):
     results = [1]
@@ -162,7 +166,7 @@ def MinR(df, n_segments):
         results.append(dist)
 
     return results
-
+###########################################
 
 def hilbert_tras(df):
     fs = 200 #frequenza di campionamento
@@ -186,4 +190,104 @@ def hilbert_tras(df):
         plv_inst_phases.append(plv)
 
     return (rms_amp_envelopes / rms_amp_envelopes[0]), (rms_inst_freqs / rms_inst_freqs[0]), plv_inst_phases
+###########################################
+
+def discrete_wavelet_tr(df):
+    cA_vec = []
+    cD_vec = []
+    for col in df.columns:
+        signal = df[col]
+        wavelet = 'db4'
+        coeffs = pywt.dwt(signal, wavelet)
+        cA, cD = coeffs #approssimazione a bassa ed alta frequenza
+        cA_vec.append(cA)
+        cD_vec.append(cD)
+    cA_mean = (np.sum(cA_vec, axis=1))/len(cA_vec)
+    cA_mean = cA_mean/cA_mean[0]
+    cD_mean = (np.sum(cD_vec, axis=1))/len(cD_vec)
+    cD_mean = cD_mean / cD_mean[0]
+    return cA_mean, cD_mean
+
+def short_time_ft(df):
+    fs = 200 #f_c
+    mav_mag = []
+    mav_pha = []
+    max_mag=[]
+    for col in df.columns:
+        signal = df[col]
+        nseg = np.round(len(signal)/35) #numero campioni per finestra
+        f, t, Zxx = stft(signal, fs, nperseg=nseg)
+        magnitude = np.abs(Zxx)  # Modulo della STFT
+        phase = np.angle(Zxx)  # Fase della STFT
+        mav_magn = ((abs(magnitude)).sum()) / len(magnitude)
+        mav_phas = ((abs(phase)).sum()) / len(phase)
+        max_magn = np.max(magnitude)
+        mav_mag.append(mav_magn)
+        mav_pha.append(mav_phas)
+        max_mag.append(max_magn)
+    return (mav_mag/mav_mag[0]), (mav_pha/mav_pha[0]), (max_mag/max_mag[0])
+
+def ramunjan_ft(df):
+    rft = []
+    for col in df.columns:
+        signal = df[col].to_numpy()
+        N= len(signal)
+        RFT = np.zeros(N, dtype=complex)
+        for k in range(1, N + 1):
+            sum_k = 0
+            for n in range(1, N + 1):
+                sum_k += signal[n - 1] * np.exp(-2j * np.pi * (k - 1) * n / N) * divisor_sigma(n)
+            RFT[k - 1] = sum_k / N
+
+        rft.append(np.sum(np.abs(RFT)) / N)
+    return rft
+
+def intrinsic_tcd (df):
+    componenti = []
+    residui = []
+
+    for col in df.columns:
+        signal = df[col]
+        components = []
+        residuo = []
+        residual = np.array(signal.copy())
+
+        for _ in range(10): # 10 numero massimo di iterazioni
+            peaks = np.where((np.roll(residual, 1) < residual) & (np.roll(residual, -1) < residual))[0] # trova gli estremi locali, [0] per farlo diventare una lista
+            valleys = np.where((np.roll(residual, 1) > residual) & (np.roll(residual, -1) > residual))[0]
+            if len(peaks) < 2 or len(valleys) < 2:
+                break  # interrompe se non ci sono abbastanza punti
+
+            upper_envelope = CubicSpline(peaks, residual[peaks])(np.arange(len(signal))) # interpolazione degli estremi
+            lower_envelope = CubicSpline(valleys, residual[valleys])(np.arange(len(signal)))
+            baseline = (upper_envelope + lower_envelope) / 2 #calcola la componente
+            component = residual - baseline
+            components.append(component)
+            residual = baseline  # aggiorna il residuo
+
+        residuo.append(residual)  # aggiunge il residuo finale
+
+        componenti.append(np.sum(np.abs(components)) / len(components))
+        residui.append((np.sum(np.abs(residuo)) / len(residuo)))
+    return (componenti / componenti[0]), (residui / residui[0])
+
+def svd (df):
+    signals = df.iloc[:, 1:]  # Tutte le righe, dalla seconda colonna in poi
+    baseline = df.iloc[:, 0]
+    U, S, Vt = np.linalg.svd(signals, full_matrices=False)
+    reference_projection = np.dot(U.T, baseline)  #proietta il segnale di riferimento sulle componenti principali
+    signals_projection = np.dot(U.T, signals)  #proiettia tutti i segnali
+    cosine_similarities = [1]
+    euclidean_distances = [1]
+    for i in range(signals.shape[1]):
+        cos_sim = np.dot(reference_projection, signals_projection[:, i]) / (
+                np.linalg.norm(reference_projection) * np.linalg.norm(signals_projection[:, i])
+        )
+        cosine_similarities.append(cos_sim)
+        eucl_dist = np.linalg.norm(reference_projection - signals_projection[:, i])
+        euclidean_distances.append(eucl_dist)
+
+    return cosine_similarities, np.array(euclidean_distances) * (0.001) # divido per mille in modo da avere valori vicino a 1
+
+
 
