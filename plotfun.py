@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def plot_dataframe(df): #segnale di baseline rosso, altri segnali grigi e fini
 
     fig, ax = plt.subplots(figsize=(20, 11))
@@ -34,7 +35,7 @@ def plot_feature_tobs(df): #insieme di grafici con ordinata il valore del target
         fig.delaxes(ax[i])
     plt.show()
 
-def plot_feat(df):
+def plot_feat(df, warning):
     nomi_segnali = df.columns.tolist()
     prima_riga = df.iloc[0]  # Ottieni i valori della prima riga
 
@@ -48,6 +49,9 @@ def plot_feat(df):
             colore = 'red' if prima_riga.iloc[i] > 0.5 else 'blue'  # Imposta il colore in base alla prima riga
             plt.plot(x_values[i], valore, marker='o', linestyle='-', color=colore)
 
+        if warning is not None:
+            for idx in warning:
+                plt.axvline(x = idx, color='red', linestyle= '--', linewidth= 2)
         # Imposta le etichette dell'asse x
         plt.xticks(x_values, nomi_segnali, rotation=45)  # Ruota le etichette per una migliore leggibilità
         plt.title(f'Feature: {index}')
